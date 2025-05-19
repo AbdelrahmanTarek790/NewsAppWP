@@ -1,17 +1,77 @@
-2025-05-19 23:29:22 info: Distribution scheduler initialized
-2025-05-19 23:29:22 info: Trending posts update job initialized
-2025-05-19 23:30:00 info: Found 0 distributions to process
-2025-05-19 23:31:00 info: Found 0 distributions to process
-2025-05-19 23:32:00 info: Found 0 distributions to process
-2025-05-19 23:33:00 info: Found 0 distributions to process
-2025-05-19 23:34:00 info: Found 0 distributions to process
-2025-05-19 23:35:00 info: Found 0 distributions to process
-2025-05-19 23:36:00 info: Found 0 distributions to process
-2025-05-19 23:37:00 info: Found 0 distributions to process
-2025-05-19 23:38:00 info: Found 0 distributions to process
-2025-05-19 23:39:00 info: Found 0 distributions to process
-2025-05-19 23:40:00 info: Found 0 distributions to process
-2025-05-19 23:41:00 info: Found 0 distributions to process
-2025-05-19 23:42:00 info: Found 0 distributions to process
-2025-05-19 23:43:00 info: Found 0 distributions to process
-2025-05-19 23:44:00 info: Found 0 distributions to process
+2025-05-20 00:07:59 info: Trending posts update job initialized
+2025-05-20 00:08:01 info: Trending posts update job initialized
+2025-05-20 00:08:42 error: Error initializing trending updates
+2025-05-20 00:08:55 error: Error initializing trending updates
+2025-05-20 00:08:58 error: Error initializing trending updates
+2025-05-20 00:09:03 error: Error initializing trending updates
+2025-05-20 00:09:05 error: Error initializing trending updates
+2025-05-20 00:09:09 error: Error initializing trending updates
+2025-05-20 00:09:23 error: Error initializing trending updates
+2025-05-20 00:09:25 error: Error initializing trending updates
+2025-05-20 00:09:26 error: Error initializing trending updates
+2025-05-20 00:09:42 error: Error initializing trending updates
+2025-05-20 00:10:43 error: Error initializing trending updates
+2025-05-20 00:10:50 error: Error initializing trending updates
+2025-05-20 00:11:03 error: Error initializing trending updates
+2025-05-20 00:11:30 debug: Testing current Date: Tue May 20 2025 00:11:30 GMT+0300 (Eastern European Summer Time)
+2025-05-20 00:11:30 error: Error initializing trending updates
+2025-05-19 21:12:22 debug: Testing current Date: Mon May 19 2025 21:12:22 GMT+0000 (Coordinated Universal Time)
+2025-05-19 21:12:22 info: Trending posts update job initialized
+2025-05-19 21:12:30 info: Distribution scheduler initialized
+2025-05-19 21:12:30 debug: Testing current Date: Mon May 19 2025 21:12:30 GMT+0000 (Coordinated Universal Time)
+2025-05-19 21:12:30 info: Trending posts update job initialized
+2025-05-19 21:12:38 info: Distribution scheduler initialized
+2025-05-19 21:12:38 info: Trending posts update job initialized
+2025-05-19 21:12:54 error: ERROR 💥
+2025-05-19 21:13:00 info: Found 0 distributions to process
+2025-05-19 21:13:14 error: Error sending email
+2025-05-19 21:13:14 error: Error sending verification email
+2025-05-19 21:13:14 error: ERROR 💥
+2025-05-19 21:13:50 info: Distribution scheduler initialized
+2025-05-19 21:13:50 info: Trending posts update job initialized
+2025-05-19 21:13:55 info: Distribution scheduler initialized
+2025-05-19 21:13:55 info: Trending posts update job initialized
+2025-05-19 21:13:58 info: Distribution scheduler initialized
+2025-05-19 21:13:58 info: Trending posts update job initialized
+2025-05-19 21:14:00 info: Found 0 distributions to process
+2025-05-19 21:14:13 error: Error sending email
+2025-05-19 21:14:14 error: Error sending verification email
+2025-05-19 21:14:14 error: ERROR 💥
+2025-05-19 21:14:55 info: Distribution scheduler initialized
+2025-05-19 21:14:55 info: Trending posts update job initialized
+2025-05-19 21:15:00 info: Found 0 distributions to process
+2025-05-19 21:15:08 info: Distribution scheduler initialized
+2025-05-19 21:15:08 info: Trending posts update job initialized
+2025-05-19 21:15:18 info: Distribution scheduler initialized
+2025-05-19 21:15:18 info: Trending posts update job initialized
+2025-05-19 21:15:26 error: Error sending email
+2025-05-19 21:15:26 error: Error sending verification email
+2025-05-19 21:15:26 error: ERROR 💥
+2025-05-19 21:15:37 info: Distribution scheduler initialized
+2025-05-19 21:15:37 info: Trending posts update job initialized
+2025-05-19 21:16:00 info: Found 0 distributions to process
+2025-05-19 21:17:00 info: Found 0 distributions to process
+2025-05-19 21:17:09 info: Email sent successfully
+2025-05-19 21:17:19 error: ERROR 💥
+2025-05-19 21:17:20 error: ERROR 💥
+2025-05-19 21:18:00 info: Found 0 distributions to process
+2025-05-19 21:18:27 info: Distribution scheduler initialized
+2025-05-19 21:18:27 info: Trending posts update job initialized
+2025-05-19 21:19:00 info: Found 0 distributions to process
+2025-05-19 21:19:05 error: ERROR 💥
+2025-05-19 21:19:19 info: Email sent successfully
+2025-05-19 21:20:00 info: Found 0 distributions to process
+2025-05-19 21:21:00 info: Found 0 distributions to process
+2025-05-19 21:22:00 info: Found 0 distributions to process
+2025-05-19 21:23:00 info: Found 0 distributions to process
+2025-05-19 21:24:00 info: Found 0 distributions to process
+2025-05-19 21:25:00 info: Found 0 distributions to process
+2025-05-19 21:26:00 info: Found 0 distributions to process
+2025-05-19 21:27:00 info: Found 0 distributions to process
+2025-05-19 21:28:00 info: Found 0 distributions to process
+2025-05-19 21:29:00 info: Found 0 distributions to process
+2025-05-19 21:30:00 info: Found 0 distributions to process
+2025-05-19 21:31:00 info: Found 0 distributions to process
+2025-05-19 21:32:00 info: Found 0 distributions to process
+2025-05-19 21:33:00 info: Found 0 distributions to process
+2025-05-19 21:34:00 info: Found 0 distributions to process

@@ -8,7 +8,8 @@ beforeAll(async () => {
   const testDB = process.env.MONGODB_URI_TEST || 'mongodb://localhost:27017/news-press-api-test';
   await mongoose.connect(testDB, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    dbName: process.env.DB_NAME_TEST || 'news-press-api-test'
   });
 });
 

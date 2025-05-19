@@ -84,7 +84,7 @@ router.patch('/update-password',
   authController.updatePassword
 );
 
-router.post('/verify-email/:token', authController.verifyEmail);
+router.get('/verify-email/:token', authController.verifyEmail);
 
 router.post('/resend-verification',
   [

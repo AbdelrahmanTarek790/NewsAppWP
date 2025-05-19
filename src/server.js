@@ -3,7 +3,8 @@ const dotenv = require('dotenv');
 
 // Load environment variables from .env file
 dotenv.config();
-
+process.env.TZ = 'UTC';
+process.env.LANG = 'en_US.UTF-8';
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
@@ -44,6 +45,8 @@ const server = app.listen(port, () => {
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.log(err);
+  
   console.log(err.name, err.message);
   server.close(() => {
     process.exit(1);
