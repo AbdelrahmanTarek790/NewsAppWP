@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 20px;
+    }
+    .logo {
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      color: #2c3e50;
+      margin: 0;
+    }
+    .post-title {
+      font-size: 24px;
+      margin: 25px 0 15px;
+      color: #2c3e50;
+    }
+    .post-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    .content {
+      margin-bottom: 30px;
+    }
+    .content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #7f8c8d;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+    .social-links {
+      margin: 15px 0;
+    }
+    .social-links a {
+      margin: 0 10px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://via.placeholder.com/150x50?text=NewsPress" alt="NewsPress" class="logo">
+    <h1>{{title}}</h1>
+  </div>
+  
+  <div class="content">
+    <h2 class="post-title">{{postTitle}}</h2>
+    
+    <img src="https://via.placeholder.com/600x300" alt="{{postTitle}}" class="post-image">
+    
+    <div>
+      {{content}}
+    </div>
+    
+    <p style="margin-top: 30px; text-align: center;">
+      <a href="{{postLink}}" class="cta-button">Read Full Article</a>
+    </p>
+  </div>
+  
+  <div class="footer">
+    <div class="social-links">
+      <a href="#" title="Twitter">T</a>
+      <a href="#" title="Facebook">F</a>
+      <a href="#" title="Instagram">I</a>
+      <a href="#" title="LinkedIn">L</a>
+    </div>
+    <p>
+      You're receiving this email because you subscribed to our newsletter.
+      <br>
+      <a href="#">Unsubscribe</a> |
+      <a href="#">Update Preferences</a>
+    </p>
+    <p>&copy; 2025 NewsPress. All rights reserved.</p>
+  </div>
+</body>
+</html>
