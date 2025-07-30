@@ -49,6 +49,8 @@ export interface Post {
     createdAt: string
     updatedAt: string
     publishedAt?: string
+    readTime?: number
+    commentCount?: number
 }
 
 export interface Category {
@@ -58,6 +60,27 @@ export interface Category {
     description?: string
     color?: string
     icon?: string
+}
+
+export interface Comment {
+    _id: string
+    content: string
+    post: string
+    user: {
+        _id: string
+        name: string
+        username: string
+        avatar?: string
+    }
+    parent?: string
+    status: "pending" | "approved" | "rejected"
+    likes: number
+    likedBy: string[]
+    dislikes: number
+    dislikedBy: string[]
+    replies?: Comment[]
+    createdAt: string
+    updatedAt: string
 }
 
 export interface AuthContextType {

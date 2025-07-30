@@ -1,4 +1,4 @@
-import { AuthResponse, Category, Post, User } from "@/app/types"
+import { AuthResponse, Category, Post, User, Comment } from "@/app/types"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 // Base API configuration
@@ -32,6 +32,14 @@ interface CategoriesResponse {
 
 interface PostResponse {
     post: Post
+}
+
+interface CommentsResponse {
+    comments: Comment[]
+}
+
+interface CommentResponse {
+    comment: Comment
 }
 
 class ApiService {
@@ -205,6 +213,76 @@ class ApiService {
 
     async searchPosts(query: string, page: number = 1): Promise<ApiResponse<PostsResponse>> {
         return this.request(`/search/posts?q=${encodeURIComponent(query)}&page=${page}`)
+    }
+
+    // User methods
+    async updateProfile(data: { name?: string; email?: string; username?: string; bio?: string }): Promise<ApiResponse<{ user: User }>> {
+        return this.request("/users/update-me", {
+            method: "PATCH",
+            body: JSON.stringify(data),
+        })
+    }
+
+    async getUserStats(): Promise<ApiResponse<{ stats: any }>> {
+        return this.request("/users/me/stats")
+    }
+
+    // Comment methods
+    async getPostComments(postId: string): Promise<ApiResponse<CommentsResponse>> {
+        return this.request(`/comments/post/${postId}`)
+    }
+
+    async createComment(postId: string, content: string, parentId?: string): Promise<ApiResponse<CommentResponse>> {
+        return this.request(`/comments/post/${postId}`, {
+            method: "POST",
+            body: JSON.stringify({ content, parent: parentId }),
+        })
+    }
+
+    async updateComment(commentId: string, content: string): Promise<ApiResponse<CommentResponse>> {
+        return this.request(`/comments/${commentId}`, {
+            method: "PATCH",
+            body: JSON.stringify({ content }),
+        })
+    }
+
+    async deleteComment(commentId: string): Promise<ApiResponse<any>> {
+        return this.request(`/comments/${commentId}`, {
+            method: "DELETE",
+        })
+    }
+
+    async likeComment(commentId: string): Promise<ApiResponse<CommentResponse>> {
+        return this.request(`/comments/${commentId}/like`, {
+            method: "POST",
+        })
+    }
+
+    async dislikeComment(commentId: string): Promise<ApiResponse<CommentResponse>> {
+        return this.request(`/comments/${commentId}/dislike`, {
+            method: "POST",
+        })
+    }
+
+    // Post interaction methods
+    async likePost(postId: string): Promise<ApiResponse<PostResponse>> {
+        return this.request(`/posts/${postId}/like`, {
+            method: "POST",
+        })
+    }
+
+    async unlikePost(postId: string): Promise<ApiResponse<PostResponse>> {
+        return this.request(`/posts/${postId}/unlike`, {
+            method: "POST",
+        })
+    }
+
+    async getFeaturedPosts(): Promise<ApiResponse<PostsResponse>> {
+        return this.request("/posts/featured")
+    }
+
+    async getTrendingPosts(): Promise<ApiResponse<PostsResponse>> {
+        return this.request("/posts/trending")
     }
 }
 

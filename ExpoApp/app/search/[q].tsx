@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useEffect, useState } from "react"
-import { Alert, RefreshControl, ScrollView, StyleSheet, Text } from "react-native"
+import { Alert, RefreshControl, ScrollView, StyleSheet, Text, Image } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { Post } from "@/app/types"
@@ -74,55 +74,67 @@ function SearchContent() {
     }
 
     const PostCard = ({ post }: { post: Post }) => (
-        <Card className="mb-4">
-            <Box className="p-4">
-                <VStack space="sm">
-                    {/* Post header */}
-                    <HStack className="justify-between items-start">
-                        <Box className="flex-1">
-                            {post.categories.map((category) => (
-                                <Text key={category._id} className="text-xs text-blue-600 font-medium mb-1">
-                                    {category.name}
-                                </Text>
-                            ))}
-                            <Heading size="sm" className="mb-2">
-                                {post.title}
-                            </Heading>
-                        </Box>
-                        {post.featured && (
-                            <Box className="bg-yellow-100 px-2 py-1 rounded">
-                                <Text className="text-xs text-yellow-800">Featured</Text>
+        <Card className="mb-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-100 dark:border-gray-700">
+            <Box className="overflow-hidden">
+                {/* Featured Image */}
+                {post.featuredImage && (
+                    <Image
+                        source={{ uri: post.featuredImage }}
+                        style={{ width: '100%', height: 200 }}
+                        className="bg-gray-200 dark:bg-gray-700"
+                        resizeMode="cover"
+                    />
+                )}
+                
+                <Box className="p-4">
+                    <VStack space="sm">
+                        {/* Post header */}
+                        <HStack className="justify-between items-start">
+                            <Box className="flex-1">
+                                {post.categories.map((category) => (
+                                    <Text key={category._id} className="text-xs text-red-600 dark:text-red-400 font-medium mb-1">
+                                        {category.name}
+                                    </Text>
+                                ))}
+                                <Heading size="sm" className="mb-2 text-black dark:text-white">
+                                    {post.title}
+                                </Heading>
                             </Box>
-                        )}
-                    </HStack>
-
-                    {/* Post excerpt */}
-                    <Text className="text-gray-600 text-sm mb-3">{post.excerpt}</Text>
-
-                    {/* Post meta */}
-                    <HStack className="justify-between items-center">
-                        <VStack>
-                            <Text className="text-xs text-gray-500">By {post.author.name}</Text>
-                            <Text className="text-xs text-gray-400">{new Date(post.createdAt).toLocaleDateString()}</Text>
-                        </VStack>
-
-                        <HStack space="md" className="items-center">
-                            <HStack space="xs" className="items-center">
-                                <Text className="text-xs text-gray-500">👁 {post.views}</Text>
-                            </HStack>
-
-                            <Button size="xs" variant="outline" onPress={() => handleLikePost(post._id)}>
-                                <HStack space="xs" className="items-center">
-                                    <Text className="text-xs">❤️ {post.likes}</Text>
-                                </HStack>
-                            </Button>
-
-                            <Button size="xs" onPress={() => handleReadMore(post._id)}>
-                                <ButtonText className="text-xs">Read More</ButtonText>
-                            </Button>
+                            {post.featured && (
+                                <Box className="bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
+                                    <Text className="text-xs text-red-800 dark:text-red-200">Featured</Text>
+                                </Box>
+                            )}
                         </HStack>
-                    </HStack>
-                </VStack>
+
+                        {/* Post excerpt */}
+                        <Text className="text-gray-600 dark:text-gray-300 text-sm mb-3">{post.excerpt}</Text>
+
+                        {/* Post meta */}
+                        <HStack className="justify-between items-center">
+                            <VStack>
+                                <Text className="text-xs text-gray-500 dark:text-gray-400">By {post.author.name}</Text>
+                                <Text className="text-xs text-gray-400 dark:text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</Text>
+                            </VStack>
+
+                            <HStack space="md" className="items-center">
+                                <HStack space="xs" className="items-center">
+                                    <Text className="text-xs text-gray-500 dark:text-gray-400">👁 {post.views}</Text>
+                                </HStack>
+
+                                <Button size="xs" variant="outline" onPress={() => handleLikePost(post._id)} className="border-red-600">
+                                    <HStack space="xs" className="items-center">
+                                        <Text className="text-xs text-red-600">❤️ {post.likes}</Text>
+                                    </HStack>
+                                </Button>
+
+                                <Button size="xs" onPress={() => handleReadMore(post._id)} className="bg-red-600">
+                                    <ButtonText className="text-xs text-white">Read More</ButtonText>
+                                </Button>
+                            </HStack>
+                        </HStack>
+                    </VStack>
+                </Box>
             </Box>
         </Card>
     )
