@@ -8,19 +8,21 @@ import { Heading } from '@/components/ui/heading';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'expo-router';
+import { Colors } from '@/constants/Colors';
 
 // Simple Divider component
-const Divider = () => <Box className="h-px bg-gray-200 my-2" />;
+const Divider = () => <Box className="h-px bg-gray-200 dark:bg-gray-700 my-2" />;
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
+  const { theme, actualTheme, setTheme } = useTheme();
   const router = useRouter();
   
   // Settings state
   const [pushNotifications, setPushNotifications] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
 
   const handleLogout = async () => {
@@ -74,6 +76,10 @@ export default function SettingsPage() {
     Alert.alert('Contact Support', 'This will open the support contact form.');
   };
 
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
+    setTheme(newTheme);
+  };
+
   const SettingItem = ({ 
     title, 
     subtitle, 
@@ -88,8 +94,8 @@ export default function SettingsPage() {
     <Pressable onPress={onPress}>
       <HStack className="justify-between items-center py-3">
         <VStack className="flex-1">
-          <Text className="font-medium">{title}</Text>
-          {subtitle && <Text className="text-gray-500 text-sm">{subtitle}</Text>}
+          <Text className="font-medium text-gray-900 dark:text-white">{title}</Text>
+          {subtitle && <Text className="text-gray-500 dark:text-gray-400 text-sm">{subtitle}</Text>}
         </VStack>
         {rightElement}
       </HStack>
@@ -98,9 +104,12 @@ export default function SettingsPage() {
 
   if (!user) {
     return (
-      <Box className="flex-1 justify-center items-center p-6">
-        <Text>Please log in to access settings</Text>
-        <Button onPress={() => router.push('/login' as any)} className="mt-4">
+      <Box 
+        className="flex-1 justify-center items-center p-6"
+        style={{ backgroundColor: Colors[actualTheme].background }}
+      >
+        <Text className="text-gray-900 dark:text-white">Please log in to access settings</Text>
+        <Button onPress={() => router.push('/login' as any)} className="mt-4 bg-red-600">
           <ButtonText>Go to Login</ButtonText>
         </Button>
       </Box>
@@ -108,13 +117,18 @@ export default function SettingsPage() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={[
+        styles.container, 
+        { backgroundColor: Colors[actualTheme].background }
+      ]}
+    >
       <Box className="p-6">
         <VStack space="lg">
           {/* Notifications */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <Box className="p-4">
-              <Heading size="md" className="mb-4">Notifications</Heading>
+              <Heading size="md" className="mb-4 text-gray-900 dark:text-white">Notifications</Heading>
               <VStack space="md">
                 <SettingItem
                   title="Push Notifications"
@@ -123,6 +137,8 @@ export default function SettingsPage() {
                     <Switch
                       value={pushNotifications}
                       onValueChange={setPushNotifications}
+                      trackColor={{ false: '#E5E7EB', true: Colors[actualTheme].primary }}
+                      thumbColor={pushNotifications ? '#FFFFFF' : '#9CA3AF'}
                     />
                   }
                 />
@@ -136,6 +152,8 @@ export default function SettingsPage() {
                     <Switch
                       value={emailNotifications}
                       onValueChange={setEmailNotifications}
+                      trackColor={{ false: '#E5E7EB', true: Colors[actualTheme].primary }}
+                      thumbColor={emailNotifications ? '#FFFFFF' : '#9CA3AF'}
                     />
                   }
                 />
@@ -144,20 +162,43 @@ export default function SettingsPage() {
           </Card>
 
           {/* Appearance */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <Box className="p-4">
-              <Heading size="md" className="mb-4">Appearance</Heading>
+              <Heading size="md" className="mb-4 text-gray-900 dark:text-white">Appearance</Heading>
               <VStack space="md">
                 <SettingItem
-                  title="Dark Mode"
-                  subtitle="Use dark theme throughout the app"
-                  rightElement={
-                    <Switch
-                      value={darkMode}
-                      onValueChange={setDarkMode}
-                    />
-                  }
+                  title="Theme"
+                  subtitle={`Current: ${theme === 'system' ? `System (${actualTheme})` : theme}`}
                 />
+                
+                <HStack space="sm" className="mt-2">
+                  <Button 
+                    variant={theme === 'light' ? 'solid' : 'outline'}
+                    size="sm"
+                    onPress={() => handleThemeChange('light')}
+                    className={theme === 'light' ? 'bg-red-600' : 'border-red-600'}
+                  >
+                    <ButtonText className={theme === 'light' ? 'text-white' : 'text-red-600'}>Light</ButtonText>
+                  </Button>
+                  
+                  <Button 
+                    variant={theme === 'dark' ? 'solid' : 'outline'}
+                    size="sm"
+                    onPress={() => handleThemeChange('dark')}
+                    className={theme === 'dark' ? 'bg-red-600' : 'border-red-600'}
+                  >
+                    <ButtonText className={theme === 'dark' ? 'text-white' : 'text-red-600'}>Dark</ButtonText>
+                  </Button>
+                  
+                  <Button 
+                    variant={theme === 'system' ? 'solid' : 'outline'}
+                    size="sm"
+                    onPress={() => handleThemeChange('system')}
+                    className={theme === 'system' ? 'bg-red-600' : 'border-red-600'}
+                  >
+                    <ButtonText className={theme === 'system' ? 'text-white' : 'text-red-600'}>System</ButtonText>
+                  </Button>
+                </HStack>
                 
                 <Divider />
                 
@@ -168,6 +209,8 @@ export default function SettingsPage() {
                     <Switch
                       value={autoPlay}
                       onValueChange={setAutoPlay}
+                      trackColor={{ false: '#E5E7EB', true: Colors[actualTheme].primary }}
+                      thumbColor={autoPlay ? '#FFFFFF' : '#9CA3AF'}
                     />
                   }
                 />
@@ -176,9 +219,9 @@ export default function SettingsPage() {
           </Card>
 
           {/* Account */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <Box className="p-4">
-              <Heading size="md" className="mb-4">Account</Heading>
+              <Heading size="md" className="mb-4 text-gray-900 dark:text-white">Account</Heading>
               <VStack space="md">
                 <SettingItem
                   title="Change Password"
@@ -200,9 +243,9 @@ export default function SettingsPage() {
           </Card>
 
           {/* Support */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <Box className="p-4">
-              <Heading size="md" className="mb-4">Support</Heading>
+              <Heading size="md" className="mb-4 text-gray-900 dark:text-white">Support</Heading>
               <VStack space="md">
                 <SettingItem
                   title="Contact Support"
@@ -233,11 +276,11 @@ export default function SettingsPage() {
           </Card>
 
           {/* App Info */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <Box className="p-4">
               <VStack space="sm" className="items-center">
-                <Text className="text-gray-500">NewsPress App</Text>
-                <Text className="text-gray-400 text-sm">Version 1.0.0</Text>
+                <Text className="text-gray-500 dark:text-gray-400">NewsPress App</Text>
+                <Text className="text-gray-400 dark:text-gray-500 text-sm">Version 1.0.0</Text>
               </VStack>
             </Box>
           </Card>
@@ -245,11 +288,10 @@ export default function SettingsPage() {
           {/* Logout Button */}
           <Button 
             variant="solid" 
-            action="negative"
             onPress={handleLogout}
-            className="mt-4"
+            className="mt-4 bg-red-600"
           >
-            <ButtonText>Logout</ButtonText>
+            <ButtonText className="text-white">Logout</ButtonText>
           </Button>
         </VStack>
       </Box>
@@ -260,6 +302,5 @@ export default function SettingsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
 });

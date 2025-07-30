@@ -4,3 +4,16 @@
 /logs
 /logs/combined.log
 /logs/error.log
+
+# Expo
+ExpoApp/node_modules/
+ExpoApp/.expo/
+ExpoApp/dist/
+ExpoApp/web-build/
+
+# Dependencies
+**/node_modules/
+
+# Build artifacts
+**/dist/
+**/build/

@@ -1,36 +1,40 @@
 /**
  * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Using a red, white, and black theme as requested.
  */
 
-const tintColorLight = '#2563EB'; // Blue-600
-const tintColorDark = '#60A5FA'; // Blue-400
+const tintColorLight = '#DC2626'; // Red-600
+const tintColorDark = '#F87171'; // Red-400
 
 export const Colors = {
   light: {
-    text: '#1F2937', // Gray-800
-    background: '#FFFFFF',
+    text: '#000000', // Pure Black
+    background: '#FFFFFF', // Pure White
     tint: tintColorLight,
     icon: '#6B7280', // Gray-500
     tabIconDefault: '#9CA3AF', // Gray-400
     tabIconSelected: tintColorLight,
-    card: '#F9FAFB', // Gray-50
-    border: '#E5E7EB', // Gray-200
-    success: '#10B981', // Emerald-500
-    error: '#EF4444', // Red-500
-    warning: '#F59E0B', // Amber-500
+    card: '#F9FAFB', // Very light gray
+    border: '#E5E7EB', // Light gray
+    success: '#059669', // Green-600
+    error: '#DC2626', // Red-600
+    warning: '#D97706', // Orange-600
+    primary: tintColorLight,
+    secondary: '#6B7280',
   },
   dark: {
-    text: '#F9FAFB', // Gray-50
-    background: '#111827', // Gray-900
+    text: '#FFFFFF', // Pure White
+    background: '#000000', // Pure Black
     tint: tintColorDark,
     icon: '#9CA3AF', // Gray-400
     tabIconDefault: '#6B7280', // Gray-500
     tabIconSelected: tintColorDark,
-    card: '#1F2937', // Gray-800
-    border: '#374151', // Gray-700
-    success: '#34D399', // Emerald-400
+    card: '#1F1F1F', // Very dark gray
+    border: '#374151', // Dark gray
+    success: '#10B981', // Green-500
     error: '#F87171', // Red-400
     warning: '#FCD34D', // Amber-300
+    primary: tintColorDark,
+    secondary: '#9CA3AF',
   },
 };

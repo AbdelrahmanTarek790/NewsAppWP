@@ -5,19 +5,13 @@ import { Stack } from "expo-router"
 import "react-native-reanimated"
 
 import { AuthProvider } from "@/context/AuthContext"
+import { ThemeProvider, useTheme } from "@/context/ThemeContext"
 
-export default function RootLayout() {
-    const [loaded] = useFonts({
-        SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    })
-
-    if (!loaded) {
-        // Async font loading only occurs in development.
-        return null
-    }
-
+function RootLayoutContent() {
+    const { actualTheme } = useTheme();
+    
     return (
-        <GluestackUIProvider mode="dark">
+        <GluestackUIProvider mode={actualTheme}>
             <AuthProvider>
                 <Stack>
                     <Stack.Screen name="index" options={{ headerShown: true }} />
@@ -30,5 +24,22 @@ export default function RootLayout() {
                 </Stack>
             </AuthProvider>
         </GluestackUIProvider>
+    )
+}
+
+export default function RootLayout() {
+    const [loaded] = useFonts({
+        SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    })
+
+    if (!loaded) {
+        // Async font loading only occurs in development.
+        return null
+    }
+
+    return (
+        <ThemeProvider>
+            <RootLayoutContent />
+        </ThemeProvider>
     )
 }
