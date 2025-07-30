@@ -12,11 +12,14 @@ import { Input, InputField } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { VStack } from "@/components/ui/vstack"
 import { useAuth } from "@/context/AuthContext"
+import { useTheme } from "@/context/ThemeContext"
+import { Colors } from "@/constants/Colors"
 import { apiService } from "@/services/api"
 import { useRouter } from "expo-router"
 
 export default function HomeScreen() {
     const { user, isAuthenticated } = useAuth()
+    const { actualTheme } = useTheme()
     const router = useRouter()
     const [posts, setPosts] = useState<Post[]>([])
     const [loading, setLoading] = useState(true)
@@ -99,51 +102,51 @@ export default function HomeScreen() {
     }
 
     const PostCard = ({ post }: { post: Post }) => (
-        <Card className="mb-4 bg-white shadow-lg">
+        <Card className="mb-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-100 dark:border-gray-700">
             <Box className="p-4">
                 <VStack space="sm">
                     {/* Post header */}
                     <HStack className="justify-between items-start">
                         <Box className="flex-1">
                             {post.categories.map((category) => (
-                                <Text key={category._id} className="text-xs text-blue-600 font-medium mb-1">
+                                <Text key={category._id} className="text-xs text-red-600 dark:text-red-400 font-medium mb-1">
                                     {category.name}
                                 </Text>
                             ))}
-                            <Heading size="sm" className="mb-2 text-black">
+                            <Heading size="sm" className="mb-2 text-black dark:text-white">
                                 {post.title}
                             </Heading>
                         </Box>
                         {post.featured && (
-                            <Box className="bg-yellow-100 px-2 py-1 rounded">
-                                <Text className="text-xs text-yellow-800">Featured</Text>
+                            <Box className="bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
+                                <Text className="text-xs text-red-800 dark:text-red-200">Featured</Text>
                             </Box>
                         )}
                     </HStack>
 
                     {/* Post excerpt */}
-                    <Text className="text-gray-600 text-sm mb-3">{post.excerpt}</Text>
+                    <Text className="text-gray-600 dark:text-gray-300 text-sm mb-3">{post.excerpt}</Text>
 
                     {/* Post meta */}
                     <HStack className="justify-between items-center">
                         <VStack>
-                            <Text className="text-xs text-gray-500">By {post.author?.name || "Unknown"}</Text>
-                            <Text className="text-xs text-gray-400">{new Date(post.createdAt).toLocaleDateString()}</Text>
+                            <Text className="text-xs text-gray-500 dark:text-gray-400">By {post.author?.name || "Unknown"}</Text>
+                            <Text className="text-xs text-gray-400 dark:text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</Text>
                         </VStack>
 
                         <HStack space="md" className="items-center">
                             <HStack space="xs" className="items-center">
-                                <Text className="text-xs text-gray-500">👁 {post.views}</Text>
+                                <Text className="text-xs text-gray-500 dark:text-gray-400">👁 {post.views}</Text>
                             </HStack>
 
-                            <Button size="xs" variant="outline" onPress={() => handleLikePost(post._id)}>
+                            <Button size="xs" variant="outline" onPress={() => handleLikePost(post._id)} className="border-red-600">
                                 <HStack space="xs" className="items-center">
-                                    <Text className="text-xs">❤️ {post.likes}</Text>
+                                    <Text className="text-xs text-red-600">❤️ {post.likes}</Text>
                                 </HStack>
                             </Button>
 
-                            <Button size="xs" onPress={() => handleReadMore(post.slug)}>
-                                <ButtonText className="text-xs">Read More</ButtonText>
+                            <Button size="xs" onPress={() => handleReadMore(post.slug)} className="bg-red-600">
+                                <ButtonText className="text-xs text-white">Read More</ButtonText>
                             </Button>
                         </HStack>
                     </HStack>
@@ -153,54 +156,70 @@ export default function HomeScreen() {
     )
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <SafeAreaView 
+            style={[
+                styles.container, 
+                { backgroundColor: Colors[actualTheme].background }
+            ]}
+        >
+            <ScrollView 
+                refreshControl={
+                    <RefreshControl 
+                        refreshing={refreshing} 
+                        onRefresh={onRefresh}
+                        tintColor={Colors[actualTheme].primary}
+                        colors={[Colors[actualTheme].primary]}
+                    />
+                }
+            >
                 <Box className="p-4">
                     <VStack space="lg">
                         {/* Header */}
                         <VStack space="sm">
                             <HStack className="justify-between items-center">
-                                <Heading size="xl">NewsPress</Heading>
-                                <Button size="sm" variant="outline" onPress={() => router.push("/settings" as any)}>
-                                    <ButtonText>⚙️</ButtonText>
+                                <Heading size="xl" className="text-black dark:text-white">NewsPress</Heading>
+                                <Button size="sm" variant="outline" onPress={() => router.push("/settings" as any)} className="border-red-600">
+                                    <ButtonText className="text-red-600">⚙️</ButtonText>
                                 </Button>
                             </HStack>
 
                             {user ? (
-                                <Text className="text-gray-600">Welcome back, {user.name || "Guest"}!</Text>
+                                <Text className="text-gray-600 dark:text-gray-300">Welcome back, {user.name || "Guest"}!</Text>
                             ) : (
-                                <Text className="text-gray-600">Welcome! Log in for personalized news.</Text>
+                                <Text className="text-gray-600 dark:text-gray-300">Welcome! Log in for personalized news.</Text>
                             )}
                         </VStack>
 
                         {/* Search */}
                         <HStack space="sm">
-                            <Input className="flex-1" variant="outline">
+                            <Input className="flex-1 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800" variant="outline">
                                 <InputField
                                     placeholder="Search news..."
                                     value={searchQuery}
                                     onChangeText={setSearchQuery}
                                     onSubmitEditing={handleSearch}
+                                    className="text-black dark:text-white"
+                                    placeholderTextColor={actualTheme === 'dark' ? '#9CA3AF' : '#6B7280'}
                                 />
                             </Input>
-                            <Button onPress={handleSearch}>
-                                <ButtonText>Search</ButtonText>
+                            <Button onPress={handleSearch} className="bg-red-600">
+                                <ButtonText className="text-white">Search</ButtonText>
                             </Button>
                         </HStack>
 
                         {/* Auth prompt for guests */}
                         {!isAuthenticated && (
-                            <Card className="bg-blue-50">
+                            <Card className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800">
                                 <Box className="p-4">
                                     <VStack space="sm">
-                                        <Text className="font-medium">Get the full experience</Text>
-                                        <Text className="text-sm text-gray-600">Log in to search, like articles, and get personalized news.</Text>
+                                        <Text className="font-medium text-black dark:text-white">Get the full experience</Text>
+                                        <Text className="text-sm text-gray-600 dark:text-gray-300">Log in to search, like articles, and get personalized news.</Text>
                                         <HStack space="sm">
-                                            <Button size="sm" onPress={() => router.push("/login" as any)}>
-                                                <ButtonText>Login</ButtonText>
+                                            <Button size="sm" onPress={() => router.push("/login" as any)} className="bg-red-600">
+                                                <ButtonText className="text-white">Login</ButtonText>
                                             </Button>
-                                            <Button size="sm" variant="outline" onPress={() => router.push("/register" as any)}>
-                                                <ButtonText>Sign Up</ButtonText>
+                                            <Button size="sm" variant="outline" onPress={() => router.push("/register" as any)} className="border-red-600">
+                                                <ButtonText className="text-red-600">Sign Up</ButtonText>
                                             </Button>
                                         </HStack>
                                     </VStack>
@@ -211,19 +230,19 @@ export default function HomeScreen() {
                         {/* Posts */}
                         {loading ? (
                             <Box className="items-center py-8">
-                                <Spinner size="large" />
-                                <Text className="mt-2 text-gray-500">Loading news...</Text>
+                                <Spinner size="large" color={Colors[actualTheme].primary} />
+                                <Text className="mt-2 text-gray-500 dark:text-gray-400">Loading news...</Text>
                             </Box>
                         ) : (
                             <VStack space="md">
-                                <Heading size="md">Latest News</Heading>
+                                <Heading size="md" className="text-black dark:text-white">Latest News</Heading>
                                 {posts.map((post) => (
                                     <PostCard key={post._id} post={post} />
                                 ))}
 
                                 {posts.length === 0 && (
                                     <Box className="items-center py-8">
-                                        <Text className="text-gray-500">No news posts available</Text>
+                                        <Text className="text-gray-500 dark:text-gray-400">No news posts available</Text>
                                     </Box>
                                 )}
                             </VStack>
@@ -238,6 +257,5 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f9fafb",
     },
 })

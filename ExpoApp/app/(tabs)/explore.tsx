@@ -11,11 +11,14 @@ import { HStack } from "@/components/ui/hstack"
 import { Spinner } from "@/components/ui/spinner"
 import { VStack } from "@/components/ui/vstack"
 import { useAuth } from "@/context/AuthContext"
+import { useTheme } from "@/context/ThemeContext"
+import { Colors } from "@/constants/Colors"
 import { apiService } from "@/services/api"
 import { useRouter } from "expo-router"
 
 export default function CategoriesScreen() {
     const { isAuthenticated } = useAuth()
+    const { actualTheme } = useTheme()
     const router = useRouter()
     const [categories, setCategories] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
@@ -58,7 +61,7 @@ export default function CategoriesScreen() {
             name: "Technology",
             slug: "technology",
             description: "Latest tech news and innovations",
-            color: "#3B82F6",
+            color: "#DC2626", // Red theme
             icon: "💻",
         },
         {
@@ -66,7 +69,7 @@ export default function CategoriesScreen() {
             name: "Sports",
             slug: "sports",
             description: "Sports news and updates",
-            color: "#10B981",
+            color: "#DC2626",
             icon: "⚽",
         },
         {
@@ -74,7 +77,7 @@ export default function CategoriesScreen() {
             name: "Health",
             slug: "health",
             description: "Health and wellness news",
-            color: "#F59E0B",
+            color: "#DC2626",
             icon: "🏥",
         },
         {
@@ -82,7 +85,7 @@ export default function CategoriesScreen() {
             name: "Business",
             slug: "business",
             description: "Business and finance news",
-            color: "#8B5CF6",
+            color: "#DC2626",
             icon: "💼",
         },
         {
@@ -90,7 +93,7 @@ export default function CategoriesScreen() {
             name: "Entertainment",
             slug: "entertainment",
             description: "Entertainment and celebrity news",
-            color: "#EF4444",
+            color: "#DC2626",
             icon: "🎬",
         },
         {
@@ -98,7 +101,7 @@ export default function CategoriesScreen() {
             name: "Politics",
             slug: "politics",
             description: "Political news and analysis",
-            color: "#6B7280",
+            color: "#DC2626",
             icon: "🏛️",
         },
     ]
@@ -130,25 +133,32 @@ export default function CategoriesScreen() {
         if (!category) return null
 
         return (
-            <Card className="mb-4" style={{ borderLeftColor: category.color || "#ccc", borderLeftWidth: 4 }}>
+            <Card 
+                className="mb-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700" 
+                style={{ borderLeftColor: category.color || Colors[actualTheme].primary, borderLeftWidth: 4 }}
+            >
                 <Box className="p-4">
-                    <Button variant="outline" className="justify-start p-0" onPress={() => handleCategoryPress(category)}>
+                    <Button variant="outline" className="justify-start p-0 border-0" onPress={() => handleCategoryPress(category)}>
                         <HStack className="items-center flex-1" space="md">
                             <Box
                                 className="w-12 h-12 items-center justify-center rounded-lg"
-                                style={{ backgroundColor: (category.color || "#ccc") + "20" }}
+                                style={{ backgroundColor: (category.color || Colors[actualTheme].primary) + "20" }}
                             >
                                 <Text className="text-2xl">{category.icon || "📁"}</Text>
                             </Box>
 
                             <VStack className="flex-1" space="xs">
-                                <Heading size="md" className="text-left">
+                                <Heading size="md" className="text-left text-black dark:text-white">
                                     {category.name || "Unnamed Category"}
                                 </Heading>
-                                {category.description && <Text className="text-gray-600 text-sm text-left">{category.description}</Text>}
+                                {category.description && (
+                                    <Text className="text-gray-600 dark:text-gray-300 text-sm text-left">
+                                        {category.description}
+                                    </Text>
+                                )}
                             </VStack>
 
-                            <Text className="text-gray-400">›</Text>
+                            <Text className="text-gray-400 dark:text-gray-500">›</Text>
                         </HStack>
                     </Button>
                 </Box>
@@ -157,31 +167,45 @@ export default function CategoriesScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <SafeAreaView 
+            style={[
+                styles.container, 
+                { backgroundColor: Colors[actualTheme].background }
+            ]}
+        >
+            <ScrollView 
+                refreshControl={
+                    <RefreshControl 
+                        refreshing={refreshing} 
+                        onRefresh={onRefresh}
+                        tintColor={Colors[actualTheme].primary}
+                        colors={[Colors[actualTheme].primary]}
+                    />
+                }
+            >
                 <Box className="p-4">
                     <VStack space="lg">
                         {/* Header */}
                         <VStack space="sm">
-                            <Heading size="xl">News Categories</Heading>
-                            <Text className="text-gray-600">Explore news by category</Text>
+                            <Heading size="xl" className="text-black dark:text-white">News Categories</Heading>
+                            <Text className="text-gray-600 dark:text-gray-300">Explore news by category</Text>
                         </VStack>
 
                         {/* Auth prompt for guests */}
                         {!isAuthenticated && (
-                            <Card className="bg-blue-50">
+                            <Card className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800">
                                 <Box className="p-4">
                                     <VStack space="sm">
-                                        <Text className="font-medium">Browse Categories</Text>
-                                        <Text className="text-sm text-gray-600">
+                                        <Text className="font-medium text-black dark:text-white">Browse Categories</Text>
+                                        <Text className="text-sm text-gray-600 dark:text-gray-300">
                                             Log in to access category articles and get personalized content.
                                         </Text>
                                         <HStack space="sm">
-                                            <Button size="sm" onPress={() => router.push("/login" as any)}>
-                                                <ButtonText>Login</ButtonText>
+                                            <Button size="sm" onPress={() => router.push("/login" as any)} className="bg-red-600">
+                                                <ButtonText className="text-white">Login</ButtonText>
                                             </Button>
-                                            <Button size="sm" variant="outline" onPress={() => router.push("/register" as any)}>
-                                                <ButtonText>Sign Up</ButtonText>
+                                            <Button size="sm" variant="outline" onPress={() => router.push("/register" as any)} className="border-red-600">
+                                                <ButtonText className="text-red-600">Sign Up</ButtonText>
                                             </Button>
                                         </HStack>
                                     </VStack>
@@ -192,8 +216,8 @@ export default function CategoriesScreen() {
                         {/* Categories */}
                         {loading ? (
                             <Box className="items-center py-8">
-                                <Spinner size="large" />
-                                <Text className="mt-2 text-gray-500">Loading categories...</Text>
+                                <Spinner size="large" color={Colors[actualTheme].primary} />
+                                <Text className="mt-2 text-gray-500 dark:text-gray-400">Loading categories...</Text>
                             </Box>
                         ) : (
                             <VStack space="md">
@@ -205,7 +229,7 @@ export default function CategoriesScreen() {
 
                                 {categories.length === 0 && (
                                     <Box className="items-center py-8">
-                                        <Text className="text-gray-500">No categories available</Text>
+                                        <Text className="text-gray-500 dark:text-gray-400">No categories available</Text>
                                     </Box>
                                 )}
                             </VStack>
@@ -220,6 +244,5 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f9fafb",
     },
 })
