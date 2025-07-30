@@ -16,6 +16,7 @@ import { FormErrors } from "./types"
 
 export default function RegisterScreen() {
     const [name, setName] = useState<string>("")
+    const [username, setUsername] = useState<string>("")
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [confirmPassword, setConfirmPassword] = useState<string>("")
@@ -37,6 +38,14 @@ export default function RegisterScreen() {
             newErrors.name = "Name must be at least 2 characters"
         }
 
+        if (!username.trim()) {
+            newErrors.username = "Username is required"
+        } else if (username.length < 3 || username.length > 20) {
+            newErrors.username = "Username must be between 3 and 20 characters"
+        } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            newErrors.username = "Username can only contain letters, numbers, and underscores"
+        }
+
         if (!email.trim()) {
             newErrors.email = "Email is required"
         } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -45,8 +54,8 @@ export default function RegisterScreen() {
 
         if (!password.trim()) {
             newErrors.password = "Password is required"
-        } else if (password.length < 6) {
-            newErrors.password = "Password must be at least 6 characters"
+        } else if (password.length < 8) {
+            newErrors.password = "Password must be at least 8 characters"
         }
 
         if (!confirmPassword.trim()) {
@@ -69,11 +78,11 @@ export default function RegisterScreen() {
             const result = await register(name.trim(), email.trim(), password)
 
             if (result.success) {
-                router.replace("/(tabs)")
+                router.replace("/(tabs)" as any)
             } else {
                 setServerError(result.error || "Registration failed")
             }
-        } catch (error) {
+        } catch {
             setServerError("An unexpected error occurred")
         } finally {
             setIsLoading(false)
@@ -81,7 +90,7 @@ export default function RegisterScreen() {
     }
 
     const navigateToLogin = () => {
-        router.push("/login")
+        router.push("/login" as any)
     }
 
     const togglePasswordVisibility = () => {
@@ -123,6 +132,21 @@ export default function RegisterScreen() {
                                 />
                             </Input>
                             {errors.name && <Text className="text-red-500 text-sm">{errors.name}</Text>}
+                        </VStack>
+
+                        <VStack space="xs">
+                            <Text className="text-gray-700 font-medium">Username</Text>
+                            <Input variant="outline" size="md" isInvalid={!!errors.username}>
+                                <InputField
+                                    type="text"
+                                    placeholder="Choose a username"
+                                    value={username}
+                                    onChangeText={setUsername}
+                                    autoCapitalize="none"
+                                    autoComplete="username"
+                                />
+                            </Input>
+                            {errors.username && <Text className="text-red-500 text-sm">{errors.username}</Text>}
                         </VStack>
 
                         <VStack space="xs">

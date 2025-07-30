@@ -5,10 +5,8 @@ import { Stack } from "expo-router"
 import "react-native-reanimated"
 
 import { AuthProvider } from "@/context/AuthContext"
-import { useColorScheme } from "@/hooks/useColorScheme"
 
 export default function RootLayout() {
-    const colorScheme = useColorScheme()
     const [loaded] = useFonts({
         SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     })
@@ -26,6 +24,7 @@ export default function RootLayout() {
                     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                     <Stack.Screen name="login" options={{ headerShown: false }} />
                     <Stack.Screen name="register" options={{ headerShown: false }} />
+                    <Stack.Screen name="settings" options={{ headerShown: true, title: "Settings" }} />
                     <Stack.Screen name="+not-found" />
                     <Stack.Screen name="types" options={{ headerShown: false }} />
                 </Stack>

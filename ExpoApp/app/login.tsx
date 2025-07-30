@@ -54,11 +54,11 @@ export default function LoginScreen() {
             const result = await login(email.trim(), password)
 
             if (result.success) {
-                router.replace("/(tabs)")
+                router.replace("/(tabs)"as any)
             } else {
                 setServerError(result.error || "Login failed")
             }
-        } catch (error) {
+        } catch {
             setServerError("An unexpected error occurred")
         } finally {
             setIsLoading(false)
@@ -66,7 +66,7 @@ export default function LoginScreen() {
     }
 
     const navigateToRegister = () => {
-        router.push("/register")
+        router.push("/register"as any)
     }
 
     const togglePasswordVisibility = () => {
@@ -138,7 +138,7 @@ export default function LoginScreen() {
                     </Button>
 
                     <HStack space="xs" className="justify-center mt-6">
-                        <Text className="text-gray-600">Don't have an account?</Text>
+                        <Text className="text-gray-600">Don&apos;t have an account?</Text>
                         <Pressable onPress={navigateToRegister}>
                             <Text className="text-blue-600 font-medium">Sign up</Text>
                         </Pressable>
