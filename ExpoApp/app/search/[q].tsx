@@ -202,11 +202,7 @@ function SearchContent() {
 }
 
 export default function SearchPage() {
-    return (
-        <ProtectedRoute requireAuth={true} fallbackMessage="Please log in to search articles" redirectTo="/login">
-            <SearchContent />
-        </ProtectedRoute>
-    )
+    return <SearchContent />
 }
 
 const styles = StyleSheet.create({

@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Pressable, Alert } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
@@ -9,11 +9,13 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { Badge, BadgeText } from '@/components/ui/badge';
+import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'expo-router';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Colors } from '@/constants/Colors';
+import { apiService } from '@/services/api';
 
 // Simple Divider component
 const Divider = () => <Box className="h-px bg-gray-200 dark:bg-gray-700 my-2" />;
@@ -22,15 +24,59 @@ function ProfileContent() {
   const { user, logout } = useAuth();
   const { actualTheme } = useTheme();
   const router = useRouter();
+  const [userStats, setUserStats] = useState({
+    points: 700,
+    articlesRead: 45,
+    commentsPosted: 12,
+    bookmarks: 23
+  });
+  const [loading, setLoading] = useState(false);
+  const [refreshedUser, setRefreshedUser] = useState(user);
+
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      setLoading(true);
+      
+      // Get updated user data
+      const currentUser = await apiService.getCurrentUser();
+      if (currentUser) {
+        setRefreshedUser(currentUser);
+      }
+
+      // Try to get user stats - for now we'll use mock data
+      // In a real implementation, you would call apiService.getUserStats()
+      try {
+        const statsResponse = await apiService.getUserStats();
+        if (statsResponse.status === "success" && statsResponse.data?.stats) {
+          setUserStats(statsResponse.data.stats);
+        }
+      } catch (error) {
+        console.log("Stats endpoint not available, using mock data");
+        // Keep mock data as fallback
+      }
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = async () => {
-    await logout();
-    router.replace('/login');
+    try {
+      await logout();
+      router.replace('/login');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to logout. Please try again.');
+    }
   };
 
   const handleEditProfile = () => {
     // Navigate to edit profile screen (placeholder)
-    console.log('Edit profile clicked');
+    Alert.alert('Edit Profile', 'Profile editing feature coming soon!');
   };
 
   const handleSettings = () => {
@@ -38,15 +84,15 @@ function ProfileContent() {
   };
 
   const handlePaymentMethod = () => {
-    console.log('Payment method clicked');
+    Alert.alert('Payment Method', 'Payment management coming soon!');
   };
 
   const handleChangePassword = () => {
-    console.log('Change password clicked');
+    Alert.alert('Change Password', 'Password change feature coming soon!');
   };
 
   const handleGetHelp = () => {
-    console.log('Get help clicked');
+    Alert.alert('Get Help', 'Help and support coming soon!');
   };
 
   const ProfileMenuItem = ({ 
@@ -86,12 +132,7 @@ function ProfileContent() {
   );
 
   // Mock user stats (in real app, these would come from API)
-  const userStats = {
-    points: 700,
-    articlesRead: 45,
-    commentsPosted: 12,
-    bookmarks: 23
-  };
+  const displayUser = refreshedUser || user;
 
   return (
     <ScrollView 
@@ -102,6 +143,13 @@ function ProfileContent() {
     >
       <Box className="p-6">
         <VStack space="lg">
+          {loading && (
+            <Box className="items-center py-4">
+              <Spinner size="small" color={Colors[actualTheme].primary} />
+              <Text className="mt-2 text-gray-500 dark:text-gray-400">Loading profile...</Text>
+            </Box>
+          )}
+
           {/* User Profile Header with Points */}
           <Card className="bg-gradient-to-br from-red-500 to-red-700 dark:from-red-600 dark:to-red-800 p-6 rounded-2xl relative overflow-hidden">
             {/* Background decoration */}
@@ -128,21 +176,21 @@ function ProfileContent() {
             {/* User Info */}
             <HStack className="items-center" space="md">
               <Avatar size="xl" className="border-3 border-white/20">
-                {user?.avatar ? (
-                  <AvatarImage source={{ uri: user.avatar }} />
+                {displayUser?.avatar ? (
+                  <AvatarImage source={{ uri: displayUser.avatar }} />
                 ) : (
                   <AvatarFallbackText className="text-white">
-                    {user?.name || 'User'}
+                    {displayUser?.name || 'User'}
                   </AvatarFallbackText>
                 )}
               </Avatar>
               
               <VStack className="flex-1">
                 <Heading size="xl" className="text-white font-bold mb-1">
-                  {user?.name}
+                  {displayUser?.name}
                 </Heading>
                 <Text className="text-red-100 text-sm">
-                  {user?.email}
+                  {displayUser?.email}
                 </Text>
                 
                 {/* Member Badge */}
@@ -244,33 +292,33 @@ function ProfileContent() {
             <VStack space="md">
               <HStack className="justify-between items-center">
                 <Text className="font-medium text-gray-700 dark:text-gray-300">Full Name</Text>
-                <Text className="text-gray-600 dark:text-gray-400">{user?.name}</Text>
+                <Text className="text-gray-600 dark:text-gray-400">{displayUser?.name}</Text>
               </HStack>
               
               <Divider />
               
               <HStack className="justify-between items-center">
                 <Text className="font-medium text-gray-700 dark:text-gray-300">Email</Text>
-                <Text className="text-gray-600 dark:text-gray-400">{user?.email}</Text>
+                <Text className="text-gray-600 dark:text-gray-400">{displayUser?.email}</Text>
               </HStack>
               
-              {user?.username && (
+              {displayUser?.username && (
                 <>
                   <Divider />
                   <HStack className="justify-between items-center">
                     <Text className="font-medium text-gray-700 dark:text-gray-300">Username</Text>
-                    <Text className="text-gray-600 dark:text-gray-400">@{user.username}</Text>
+                    <Text className="text-gray-600 dark:text-gray-400">@{displayUser.username}</Text>
                   </HStack>
                 </>
               )}
               
-              {user?.createdAt && (
+              {displayUser?.createdAt && (
                 <>
                   <Divider />
                   <HStack className="justify-between items-center">
                     <Text className="font-medium text-gray-700 dark:text-gray-300">Member Since</Text>
                     <Text className="text-gray-600 dark:text-gray-400">
-                      {new Date(user.createdAt).toLocaleDateString()}
+                      {new Date(displayUser.createdAt).toLocaleDateString()}
                     </Text>
                   </HStack>
                 </>
@@ -280,12 +328,26 @@ function ProfileContent() {
               
               <HStack className="justify-between items-center">
                 <Text className="font-medium text-gray-700 dark:text-gray-300">Email Verified</Text>
-                <Badge className={user?.isEmailVerified ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"}>
-                  <BadgeText className={user?.isEmailVerified ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"}>
-                    {user?.isEmailVerified ? "Verified" : "Not Verified"}
+                <Badge className={displayUser?.isEmailVerified ? "bg-green-100 dark:bg-green-900" : "bg-red-100 dark:bg-red-900"}>
+                  <BadgeText className={displayUser?.isEmailVerified ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"}>
+                    {displayUser?.isEmailVerified ? "Verified" : "Not Verified"}
                   </BadgeText>
                 </Badge>
               </HStack>
+
+              {displayUser?.role && (
+                <>
+                  <Divider />
+                  <HStack className="justify-between items-center">
+                    <Text className="font-medium text-gray-700 dark:text-gray-300">Role</Text>
+                    <Badge className="bg-blue-100 dark:bg-blue-900">
+                      <BadgeText className="text-blue-800 dark:text-blue-200 capitalize">
+                        {displayUser.role}
+                      </BadgeText>
+                    </Badge>
+                  </HStack>
+                </>
+              )}
             </VStack>
           </Card>
         </VStack>

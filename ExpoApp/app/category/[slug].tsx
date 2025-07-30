@@ -197,11 +197,7 @@ function CategoryContent() {
 }
 
 export default function CategoryPage() {
-    return (
-        <ProtectedRoute requireAuth={true} fallbackMessage="Please log in to browse category articles" redirectTo="/login">
-            <CategoryContent />
-        </ProtectedRoute>
-    )
+    return <CategoryContent />
 }
 
 const styles = StyleSheet.create({

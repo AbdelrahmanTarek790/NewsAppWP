@@ -62,16 +62,6 @@ export default function HomeScreen() {
 
     const handleSearch = async () => {
         if (!searchQuery.trim()) return
-
-        // Protected action - require authentication
-        if (!isAuthenticated) {
-            Alert.alert("Login Required", "Please log in to search for news articles.", [
-                { text: "Cancel", style: "cancel" },
-                { text: "Login", onPress: () => router.push("/login" as any) },
-            ])
-            return
-        }
-
         router.push(`/search/${encodeURIComponent(searchQuery)}` as any)
     }
 
@@ -89,15 +79,7 @@ export default function HomeScreen() {
     }
 
     const handleReadMore = (postId: string) => {
-        // Protected action - require authentication for full articles
-        // if (!isAuthenticated) {
-        //     Alert.alert("Login Required", "Please log in to read full articles.", [
-        //         { text: "Cancel", style: "cancel" },
-        //         { text: "Login", onPress: () => router.push("/login" as any) },
-        //     ])
-        //     return
-        // }
-
+        // Article reading is public - no authentication required
         router.push(`/article/${postId}` as any)
     }
 
