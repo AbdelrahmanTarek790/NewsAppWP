@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContextType, AuthResponse, User } from '@/app/types';
-
+import { apiService } from '@/services/api';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -34,6 +34,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (storedToken && storedUser) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
+        
+        // Verify token is still valid and get fresh user data
+        try {
+          const currentUser = await apiService.getCurrentUser();
+          if (currentUser) {
+            setUser(currentUser);
+          } else {
+            // Token is invalid, clear auth state
+            await logout();
+          }
+        } catch (error) {
+          console.error('Failed to verify token:', error);
+          // Try to refresh token
+          const newToken = await apiService.refreshToken();
+          if (newToken) {
+            setToken(newToken);
+          } else {
+            // Could not refresh, logout
+            await logout();
+          }
+        }
       }
     } catch (error) {
       console.error('Error checking auth state:', error);
@@ -46,24 +67,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const result = await apiService.login(email, password);
       
-      // Mock successful login
-      const mockUser: User = {
-        id: '1',
-        email: email,
-        name: email.split('@')[0]
-      };
-      const mockToken = 'mock_jwt_token_' + Date.now();
+      if (result.success && result.user && result.token) {
+        setToken(result.token);
+        setUser(result.user);
+      }
       
-      await AsyncStorage.setItem('userToken', mockToken);
-      await AsyncStorage.setItem('userData', JSON.stringify(mockUser));
-      
-      setToken(mockToken);
-      setUser(mockUser);
-      
-      return { success: true };
+      return result;
     } catch (error) {
       return { success: false, error: (error as Error).message };
     } finally {
@@ -71,28 +82,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (name: string, email: string, password: string): Promise<AuthResponse> => {
+  const register = async (name: string, email: string, password: string, username?: string): Promise<AuthResponse> => {
     try {
       setIsLoading(true);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Generate username from email if not provided
+      const finalUsername = username || email.split('@')[0] + Math.floor(Math.random() * 1000);
       
-      // Mock successful registration
-      const mockUser: User = {
-        id: '1',
-        email: email,
-        name: name
-      };
-      const mockToken = 'mock_jwt_token_' + Date.now();
+      const result = await apiService.register(name, email, password, finalUsername);
       
-      await AsyncStorage.setItem('userToken', mockToken);
-      await AsyncStorage.setItem('userData', JSON.stringify(mockUser));
+      if (result.success && result.user && result.token) {
+        setToken(result.token);
+        setUser(result.user);
+      }
       
-      setToken(mockToken);
-      setUser(mockUser);
-      
-      return { success: true };
+      return result;
     } catch (error) {
       return { success: false, error: (error as Error).message };
     } finally {
@@ -102,12 +106,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async (): Promise<void> => {
     try {
-      await AsyncStorage.removeItem('userToken');
-      await AsyncStorage.removeItem('userData');
-      setToken(null);
-      setUser(null);
+      await apiService.logout();
     } catch (error) {
       console.error('Error logging out:', error);
+    } finally {
+      setToken(null);
+      setUser(null);
     }
   };
 
