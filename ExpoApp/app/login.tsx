@@ -54,7 +54,7 @@ export default function LoginScreen() {
             const result = await login(email.trim(), password)
 
             if (result.success) {
-                router.replace("/(tabs)")
+                router.replace("/(tabs)"as any)
             } else {
                 setServerError(result.error || "Login failed")
             }
@@ -66,7 +66,7 @@ export default function LoginScreen() {
     }
 
     const navigateToRegister = () => {
-        router.push("/register")
+        router.push("/register"as any)
     }
 
     const togglePasswordVisibility = () => {

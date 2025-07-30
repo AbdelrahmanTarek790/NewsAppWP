@@ -75,10 +75,10 @@ export default function RegisterScreen() {
         setServerError("")
 
         try {
-            const result = await register(name.trim(), email.trim(), password, username.trim())
+            const result = await register(name.trim(), email.trim(), password)
 
             if (result.success) {
-                router.replace("/(tabs)")
+                router.replace("/(tabs)" as any)
             } else {
                 setServerError(result.error || "Registration failed")
             }
@@ -90,7 +90,7 @@ export default function RegisterScreen() {
     }
 
     const navigateToLogin = () => {
-        router.push("/login")
+        router.push("/login" as any)
     }
 
     const togglePasswordVisibility = () => {

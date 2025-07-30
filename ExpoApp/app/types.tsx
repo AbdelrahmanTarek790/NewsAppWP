@@ -15,7 +15,9 @@ export interface User {
 export interface AuthResponse {
     success: boolean
     error?: string
-    user?: User
+    data?: {
+        user?: User
+    }
     token?: string
 }
 
@@ -37,7 +39,7 @@ export interface Post {
     }
     tags: string[]
     featuredImage?: string
-    status: 'draft' | 'published' | 'archived'
+    status: "draft" | "published" | "archived"
     featured: boolean
     trending: boolean
     views: number

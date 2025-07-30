@@ -34,7 +34,7 @@ export default function SettingsPage() {
           style: 'destructive',
           onPress: async () => {
             await logout();
-            router.replace('/login');
+            router.replace('/login' as any);
           }
         }
       ]
@@ -100,7 +100,7 @@ export default function SettingsPage() {
     return (
       <Box className="flex-1 justify-center items-center p-6">
         <Text>Please log in to access settings</Text>
-        <Button onPress={() => router.push('/login')} className="mt-4">
+        <Button onPress={() => router.push('/login' as any)} className="mt-4">
           <ButtonText>Go to Login</ButtonText>
         </Button>
       </Box>

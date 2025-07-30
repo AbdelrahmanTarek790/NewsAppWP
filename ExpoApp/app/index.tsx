@@ -1,7 +1,7 @@
+import { SplashScreen } from "@/components/SplashScreen"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
-import { SplashScreen } from "@/components/SplashScreen"
 
 export default function IndexScreen() {
     const { isAuthenticated, isLoading } = useAuth()
@@ -20,9 +20,9 @@ export default function IndexScreen() {
     useEffect(() => {
         if (!isLoading && !showSplash) {
             if (isAuthenticated) {
-                router.replace("/(tabs)")
+                router.replace("/(tabs)" as any)
             } else {
-                router.replace("/(tabs)") // Go to tabs, but protected actions will redirect to login
+                router.replace("/(tabs)" as any) // Go to tabs, but protected actions will redirect to login
             }
         }
     }, [isAuthenticated, isLoading, showSplash, router])
