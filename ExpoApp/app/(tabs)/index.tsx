@@ -22,12 +22,17 @@ export default function HomeScreen() {
     const { actualTheme } = useTheme()
     const router = useRouter()
     const [posts, setPosts] = useState<Post[]>([])
+    const [featuredPosts, setFeaturedPosts] = useState<Post[]>([])
+    const [trendingPosts, setTrendingPosts] = useState<Post[]>([])
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
+    const [activeSection, setActiveSection] = useState<"latest" | "featured" | "trending">("latest")
 
     useEffect(() => {
         loadPosts()
+        loadFeaturedPosts()
+        loadTrendingPosts()
     }, [])
 
     const loadPosts = async () => {
@@ -38,7 +43,6 @@ export default function HomeScreen() {
 
             if (response.status === "success" && response.data?.posts) {
                 console.log("Posts loaded:", response.data.posts.length)
-
                 setPosts(response.data.posts)
             } else {
                 // Fallback to mock data if API fails
@@ -54,13 +58,57 @@ export default function HomeScreen() {
         }
     }
 
+    const loadFeaturedPosts = async () => {
+        try {
+            const response = await apiService.getFeaturedPosts()
+            if (response.status === "success" && response.data?.posts) {
+                setFeaturedPosts(response.data.posts)
+            }
+        } catch (error) {
+            console.error("Failed to load featured posts:", error)
+        }
+    }
+
+    const loadTrendingPosts = async () => {
+        try {
+            const response = await apiService.getTrendingPosts()
+            if (response.status === "success" && response.data?.posts) {
+                setTrendingPosts(response.data.posts)
+            }
+        } catch (error) {
+            console.error("Failed to load trending posts:", error)
+        }
+    }
+
     const onRefresh = async () => {
         setRefreshing(true)
         await loadPosts()
+        await loadFeaturedPosts()
+        await loadTrendingPosts()
         setRefreshing(false)
     }
 
-    const handleSearch = async () => {
+    const getCurrentPosts = () => {
+        switch (activeSection) {
+            case "featured":
+                return featuredPosts
+            case "trending":
+                return trendingPosts
+            default:
+                return posts
+        }
+    }
+
+    const getSectionTitle = () => {
+        switch (activeSection) {
+            case "featured":
+                return "Featured News"
+            case "trending":
+                return "Trending News"
+            default:
+                return "Latest News"
+        }
+    }
         if (!searchQuery.trim()) return
         router.push(`/search/${encodeURIComponent(searchQuery)}` as any)
     }
@@ -221,7 +269,7 @@ export default function HomeScreen() {
                             </Card>
                         )}
 
-                        {/* Posts */}
+                        {/* Posts Section */}
                         {loading ? (
                             <Box className="items-center py-8">
                                 <Spinner size="large" color={Colors[actualTheme].primary} />
@@ -229,14 +277,54 @@ export default function HomeScreen() {
                             </Box>
                         ) : (
                             <VStack space="md">
-                                <Heading size="md" className="text-black dark:text-white">Latest News</Heading>
-                                {posts.map((post) => (
+                                {/* Section Navigation */}
+                                <VStack space="sm">
+                                    <Heading size="md" className="text-black dark:text-white">{getSectionTitle()}</Heading>
+                                    
+                                    <HStack space="sm" className="flex-wrap">
+                                        <Button 
+                                            size="sm" 
+                                            variant={activeSection === "latest" ? "solid" : "outline"}
+                                            onPress={() => setActiveSection("latest")}
+                                            className={activeSection === "latest" ? "bg-red-600" : "border-red-600"}
+                                        >
+                                            <ButtonText className={activeSection === "latest" ? "text-white" : "text-red-600"}>
+                                                Latest
+                                            </ButtonText>
+                                        </Button>
+                                        
+                                        <Button 
+                                            size="sm" 
+                                            variant={activeSection === "featured" ? "solid" : "outline"}
+                                            onPress={() => setActiveSection("featured")}
+                                            className={activeSection === "featured" ? "bg-red-600" : "border-red-600"}
+                                        >
+                                            <ButtonText className={activeSection === "featured" ? "text-white" : "text-red-600"}>
+                                                Featured ({featuredPosts.length})
+                                            </ButtonText>
+                                        </Button>
+                                        
+                                        <Button 
+                                            size="sm" 
+                                            variant={activeSection === "trending" ? "solid" : "outline"}
+                                            onPress={() => setActiveSection("trending")}
+                                            className={activeSection === "trending" ? "bg-red-600" : "border-red-600"}
+                                        >
+                                            <ButtonText className={activeSection === "trending" ? "text-white" : "text-red-600"}>
+                                                Trending ({trendingPosts.length})
+                                            </ButtonText>
+                                        </Button>
+                                    </HStack>
+                                </VStack>
+
+                                {/* Posts List */}
+                                {getCurrentPosts().map((post) => (
                                     <PostCard key={post._id} post={post} />
                                 ))}
 
-                                {posts.length === 0 && (
+                                {getCurrentPosts().length === 0 && (
                                     <Box className="items-center py-8">
-                                        <Text className="text-gray-500 dark:text-gray-400">No news posts available</Text>
+                                        <Text className="text-gray-500 dark:text-gray-400">No news posts available in this section</Text>
                                     </Box>
                                 )}
                             </VStack>
