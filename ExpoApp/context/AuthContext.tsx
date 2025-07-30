@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             const result = await apiService.login(email, password)
 
-            if (result.success && result.data.user && result.token) {
+            if (result.success && result.data?.user && result.token) {
                 setToken(result.token ?? null)
                 setUser(result.data.user)
             }
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             const result = await apiService.register(name, email, password, finalUsername)
 
-            if (result.success && result.data.user && result.token) {
+            if (result.success && result.data?.user && result.token) {
                 setToken(result.token)
                 setUser(result.data.user)
             }

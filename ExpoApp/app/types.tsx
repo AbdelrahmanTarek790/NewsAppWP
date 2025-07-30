@@ -2,7 +2,8 @@ import React from "react"
 import { StyleSheet, Text, View } from "react-native"
 
 export interface User {
-    id: string
+    _id?: string
+    id?: string
     email: string
     name: string
     username?: string

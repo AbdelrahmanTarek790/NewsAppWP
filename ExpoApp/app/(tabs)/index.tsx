@@ -13,6 +13,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { VStack } from "@/components/ui/vstack"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "expo-router"
+import { apiService } from "@/services/api"
 
 export default function HomeScreen() {
     const { user, isAuthenticated } = useAuth()
@@ -29,76 +30,107 @@ export default function HomeScreen() {
     const loadPosts = async () => {
         try {
             setLoading(true)
-            // For now, we'll use mock data since backend might not be running
-            // In production, uncomment the API call below
-            // const response = await apiService.getPosts()
-            // setPosts(response.data?.posts || [])
-
-            // Mock data for demonstration
-            const mockPosts: Post[] = [
-                {
-                    _id: "1",
-                    title: "Breaking: New Technology Advances",
-                    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-                    excerpt: "Latest developments in technology that will change the world.",
-                    author: {
-                        _id: "author1",
-                        name: "John Doe",
-                        username: "johndoe",
-                        avatar: undefined,
-                    },
-                    category: {
-                        _id: "tech",
-                        name: "Technology",
-                        slug: "technology",
-                    },
-                    tags: ["tech", "innovation"],
-                    featuredImage: undefined,
-                    status: "published" as const,
-                    featured: true,
-                    trending: true,
-                    views: 1250,
-                    likes: 89,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    publishedAt: new Date().toISOString(),
-                },
-                {
-                    _id: "2",
-                    title: "Sports Update: Championship Finals",
-                    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-                    excerpt: "Exciting championship finals happening this weekend.",
-                    author: {
-                        _id: "author2",
-                        name: "Jane Smith",
-                        username: "janesmith",
-                        avatar: undefined,
-                    },
-                    category: {
-                        _id: "sports",
-                        name: "Sports",
-                        slug: "sports",
-                    },
-                    tags: ["sports", "championship"],
-                    featuredImage: undefined,
-                    status: "published" as const,
-                    featured: false,
-                    trending: true,
-                    views: 890,
-                    likes: 56,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    publishedAt: new Date().toISOString(),
-                },
-            ]
-            setPosts(mockPosts)
+            const response = await apiService.getPosts(1, 10)
+            
+            if (response.status === "success" && response.data?.posts) {
+                setPosts(response.data.posts)
+            } else {
+                // Fallback to mock data if API fails
+                console.warn("API failed, using mock data")
+                setPosts(getMockPosts())
+            }
         } catch (error) {
             console.error("Failed to load posts:", error)
-            Alert.alert("Error", "Failed to load news posts")
+            // Use mock data as fallback
+            setPosts(getMockPosts())
         } finally {
             setLoading(false)
         }
     }
+
+    const getMockPosts = (): Post[] => [
+        {
+            _id: "1",
+            title: "Breaking: New Technology Advances",
+            content: "Stay updated with the latest technological innovations that are shaping our future. From AI developments to sustainable energy solutions, discover what's happening in the tech world.",
+            excerpt: "Latest developments in technology that will change the world.",
+            author: {
+                _id: "author1",
+                name: "John Doe",
+                username: "johndoe",
+                avatar: undefined,
+            },
+            category: {
+                _id: "tech",
+                name: "Technology",
+                slug: "technology",
+            },
+            tags: ["tech", "innovation"],
+            featuredImage: undefined,
+            status: "published" as const,
+            featured: true,
+            trending: true,
+            views: 1250,
+            likes: 89,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+        },
+        {
+            _id: "2",
+            title: "Sports Update: Championship Finals",
+            content: "Get ready for the most exciting championship finals of the season. Teams have been preparing for months, and the competition promises to be fierce.",
+            excerpt: "Exciting championship finals happening this weekend.",
+            author: {
+                _id: "author2",
+                name: "Jane Smith",
+                username: "janesmith",
+                avatar: undefined,
+            },
+            category: {
+                _id: "sports",
+                name: "Sports",
+                slug: "sports",
+            },
+            tags: ["sports", "championship"],
+            featuredImage: undefined,
+            status: "published" as const,
+            featured: false,
+            trending: true,
+            views: 890,
+            likes: 56,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+        },
+        {
+            _id: "3",
+            title: "Health & Wellness: New Research Findings",
+            content: "Recent medical research has revealed groundbreaking insights into healthy living and disease prevention. Learn about the latest findings that could improve your well-being.",
+            excerpt: "New research reveals important health insights.",
+            author: {
+                _id: "author3",
+                name: "Dr. Sarah Wilson",
+                username: "drwilson",
+                avatar: undefined,
+            },
+            category: {
+                _id: "health",
+                name: "Health",
+                slug: "health",
+            },
+            tags: ["health", "research", "wellness"],
+            featuredImage: undefined,
+            status: "published" as const,
+            featured: true,
+            trending: false,
+            views: 654,
+            likes: 42,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+        },
+    ]
 
     const onRefresh = async () => {
         setRefreshing(true)
@@ -118,16 +150,7 @@ export default function HomeScreen() {
             return
         }
 
-        try {
-            setLoading(true)
-            // const response = await apiService.searchPosts(searchQuery)
-            // setPosts(response.data?.posts || [])
-            Alert.alert("Search", `Searching for: ${searchQuery}`)
-        } catch {
-            Alert.alert("Error", "Failed to search posts")
-        } finally {
-            setLoading(false)
-        }
+        router.push(`/search/${encodeURIComponent(searchQuery)}` as any)
     }
 
     const handleLikePost = (postId: string) => {
@@ -153,7 +176,7 @@ export default function HomeScreen() {
             return
         }
 
-        Alert.alert("Read More", "Opening full article... (Feature in development)")
+        router.push(`/article/${postId}` as any)
     }
 
     const PostCard = ({ post }: { post: Post }) => (

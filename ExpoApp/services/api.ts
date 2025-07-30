@@ -1,4 +1,4 @@
-import { AuthResponse, User } from "@/app/types"
+import { AuthResponse, User, Post, Category } from "@/app/types"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 // Base API configuration
@@ -12,6 +12,21 @@ interface ApiResponse<T = any> {
     success?: boolean
     token?: any
     error?: string
+}
+
+interface PostsResponse {
+    posts: Post[]
+    total?: number
+    page?: number
+    totalPages?: number
+}
+
+interface CategoriesResponse {
+    categories: Category[]
+}
+
+interface PostResponse {
+    post: Post
 }
 
 class ApiService {
@@ -167,19 +182,19 @@ class ApiService {
     }
 
     // News/Posts methods
-    async getPosts(page: number = 1, limit: number = 10) {
+    async getPosts(page: number = 1, limit: number = 10): Promise<ApiResponse<PostsResponse>> {
         return this.request(`/posts?page=${page}&limit=${limit}`)
     }
 
-    async getPost(id: string) {
+    async getPost(id: string): Promise<ApiResponse<PostResponse>> {
         return this.request(`/posts/${id}`)
     }
 
-    async getCategories() {
+    async getCategories(): Promise<ApiResponse<CategoriesResponse>> {
         return this.request("/categories")
     }
 
-    async searchPosts(query: string, page: number = 1) {
+    async searchPosts(query: string, page: number = 1): Promise<ApiResponse<PostsResponse>> {
         return this.request(`/search/posts?q=${encodeURIComponent(query)}&page=${page}`)
     }
 }
